@@ -15,10 +15,10 @@ const loginRouter = require("./routes/loginRouter");
 const userRouter = require("./routes/userRouter");
 const inboxRouter = require("./routes/inboxRouter");
 
-// mongoose
-//   .connect(process.env.MONGO_CONNECTION_STRING)
-//   .then(() => console.log("Db connected successfully"))
-//   .catch((err) => console.log(err));
+mongoose
+  .connect(process.env.MONGO_CONNECTION_STRING)
+  .then(() => console.log("Db connected successfully"))
+  .catch((err) => console.log(err));
 
 // app.use(cors());
 app.use(express.json());
