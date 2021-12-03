@@ -1,19 +1,22 @@
+// external imports
 const cookieParser = require("cookie-parser");
 const express = require("express");
 require("dotenv").config();
 const app = express();
 const mongoose = require("mongoose");
 const path = require("path");
+const http = require("http");
+const moment = require("moment");
 
 // internal imports
 const {
-  notFound,
-  defaultErrorHandler,
+  notFoundHandler,
+  errorHandler,
 } = require("./middlewares/common/errorHandler");
 
-const loginRouter = require("./routes/loginRouter");
-const userRouter = require("./routes/userRouter");
-const inboxRouter = require("./routes/inboxRouter");
+const loginRouter = require("./router/loginRouter");
+const userRouter = require("./router/usersRouter");
+const inboxRouter = require("./router/inboxRouter");
 
 mongoose
   .connect(process.env.MONGO_CONNECTION_STRING)
@@ -22,7 +25,15 @@ mongoose
 
 // app.use(cors());
 app.use(express.json());
+const server = http.createServer(app);
 app.use(express.urlencoded({ extended: true }));
+
+// socket creation
+const io = require("socket.io")(server);
+global.io = io;
+
+// set comment as app locals
+app.locals.moment = moment;
 
 // view engin
 app.set("view engine", "ejs");
@@ -39,10 +50,10 @@ app.use("/users", userRouter);
 app.use("/inbox", inboxRouter);
 
 // error handler
-app.use(notFound);
+app.use(notFoundHandler);
 
 // default error
-app.use(defaultErrorHandler);
+app.use(errorHandler);
 
 app.listen(process.env.PORT, () => {
   console.log("listening to port" + process.env.PORT);

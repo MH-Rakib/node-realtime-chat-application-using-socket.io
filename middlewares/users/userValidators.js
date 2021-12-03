@@ -20,7 +20,6 @@ const addUserValidators = [
     .withMessage("Invalid email address")
     .trim()
     .custom(async (value) => {
-      // custom validator
       try {
         const user = await User.findOne({ email: value });
         if (user) {
@@ -30,7 +29,6 @@ const addUserValidators = [
         throw createError(err.message);
       }
     }),
-
   check("mobile")
     .isMobilePhone("bn-BD", {
       strictMode: true,
@@ -46,7 +44,6 @@ const addUserValidators = [
         throw createError(err.message);
       }
     }),
-
   check("password")
     .isStrongPassword()
     .withMessage(
@@ -64,7 +61,7 @@ const addUserValidationHandler = function (req, res, next) {
     if (req.files.length > 0) {
       const { filename } = req.files[0];
       unlink(
-        path.join(__dirname, `/../../public/uploads/avatars/${filename}`),
+        path.join(__dirname, `/../public/uploads/avatars/${filename}`),
         (err) => {
           if (err) console.log(err);
         }
